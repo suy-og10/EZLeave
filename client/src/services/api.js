@@ -69,7 +69,7 @@ export const leavesAPI = {
 
 // Departments API
 export const departmentsAPI = {
-  getDepartments: () => api.get('/departments'),
+  getDepartments: () => api.get('/departments/public'),
   getDepartment: (id) => api.get(`/departments/${id}`),
   createDepartment: (departmentData) => api.post('/departments', departmentData),
   updateDepartment: (id, departmentData) => api.put(`/departments/${id}`, departmentData),

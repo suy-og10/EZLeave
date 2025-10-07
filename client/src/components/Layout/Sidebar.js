@@ -20,25 +20,25 @@ const Sidebar = ({ open, setOpen }) => {
   const location = useLocation();
 
   const navigation = [
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-    { name: 'Apply Leave', href: '/leave/apply', icon: CalendarDaysIcon },
-    { name: 'Leave History', href: '/leave/history', icon: DocumentTextIcon },
+    { name: 'Dashboard', href: '/app/dashboard', icon: HomeIcon },
+    { name: 'Apply Leave', href: '/app/leave/apply', icon: CalendarDaysIcon },
+    { name: 'Leave History', href: '/app/leave/history', icon: DocumentTextIcon },
     ...(user?.role === 'admin' || user?.role === 'hr' ? [
-      { name: 'Leave Approvals', href: '/leave/approvals', icon: DocumentTextIcon },
-      { name: 'Employees', href: '/employees', icon: UsersIcon },
-      { name: 'Departments', href: '/departments', icon: BuildingOfficeIcon },
-      { name: 'Reports', href: '/reports', icon: ChartBarIcon },
+      { name: 'Leave Approvals', href: '/app/leave/approvals', icon: DocumentTextIcon },
+      { name: 'Employees', href: '/app/employees', icon: UsersIcon },
+      { name: 'Departments', href: '/app/departments', icon: BuildingOfficeIcon },
+      { name: 'Reports', href: '/app/reports', icon: ChartBarIcon },
     ] : []),
-    { name: 'Profile', href: '/profile', icon: UserCircleIcon },
+    { name: 'Profile', href: '/app/profile', icon: UserCircleIcon },
     ...(user?.role === 'admin' ? [
-      { name: 'Settings', href: '/settings', icon: CogIcon },
+      { name: 'Settings', href: '/app/settings', icon: CogIcon },
     ] : []),
   ];
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between h-16 px-4 bg-primary-600">
-        <Link to="/dashboard" className="flex items-center">
+        <Link to="/app/dashboard" className="flex items-center">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
               <CalendarDaysIcon className="w-6 h-6 text-primary-600" />
@@ -67,20 +67,20 @@ const Sidebar = ({ open, setOpen }) => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
         <div className="flex items-center px-3 py-2">
           <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-primary-600">
+            <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium text-primary-600 dark:text-primary-200">
                 {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
               </span>
             </div>
           </div>
           <div className="ml-3">
-            <p className="text-sm font-medium text-gray-900">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
               {user?.firstName} {user?.lastName}
             </p>
-            <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@ const Sidebar = ({ open, setOpen }) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-75" />
+            <div className="fixed inset-0 bg-gray-600 bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-75" />
           </Transition.Child>
 
           <div className="fixed inset-0 flex">
@@ -135,7 +135,7 @@ const Sidebar = ({ open, setOpen }) => {
                     </button>
                   </div>
                 </Transition.Child>
-                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
+                <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 px-6 pb-2">
                   <SidebarContent />
                 </div>
               </Dialog.Panel>
@@ -146,7 +146,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white border-r border-gray-200">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
           <SidebarContent />
         </div>
       </div>

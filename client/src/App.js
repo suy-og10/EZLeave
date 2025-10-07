@@ -5,6 +5,9 @@ import { useAuth } from './contexts/AuthContext';
 // Layout
 import Layout from './components/Layout/Layout';
 
+// Home Page
+import Home from './pages/Home/Home';
+
 // Auth Pages
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -39,7 +42,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
       </div>
     );
@@ -70,24 +73,32 @@ function App() {
     <Routes>
       {/* Public Routes */}
       <Route
+        path="/"
+        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Home />}
+      />
+      <Route
+        path="/home"
+        element={<Home />}
+      />
+      <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />}
+        element={isAuthenticated ? <Navigate to="/app/dashboard" /> : <Login />}
       />
       <Route
         path="/register"
-        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register />}
+        element={isAuthenticated ? <Navigate to="/app/dashboard" /> : <Register />}
       />
 
       {/* Protected Routes */}
       <Route
-        path="/"
+        path="/app"
         element={
           <ProtectedRoute>
             <Layout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" />} />
+        <Route index element={<Navigate to="dashboard" />} />
         <Route path="dashboard" element={<Dashboard />} />
         
         {/* Leave Management */}
@@ -155,7 +166,7 @@ function App() {
       </Route>
 
       {/* Catch all route */}
-      <Route path="*" element={<Navigate to="/dashboard" />} />
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
 }

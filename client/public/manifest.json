@@ -1,0 +1,9 @@
+{
+  "short_name": "EZLeave",
+  "name": "EZLeave - Employee Leave Management System",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "description": "A modern employee leave management system for efficient HR operations"
+}

@@ -99,6 +99,15 @@ export const AuthProvider = ({ children }) => {
       toast.success('Registration successful!');
       return { success: true };
     } catch (error) {
+      console.error('Registration error:', error.response?.data);
+      
+      // Handle validation errors
+      if (error.response?.data?.errors && Array.isArray(error.response.data.errors)) {
+        const validationErrors = error.response.data.errors.map(err => err.msg).join(', ');
+        toast.error(`Validation Error: ${validationErrors}`);
+        return { success: false, message: validationErrors };
+      }
+      
       const message = error.response?.data?.message || 'Registration failed';
       toast.error(message);
       return { success: false, message };

@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { departmentsAPI } from '../../services/api';
+import ThemeToggle from '../../components/ThemeToggle';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 const Register = () => {
@@ -27,15 +28,18 @@ const Register = () => {
     const { confirmPassword, ...userData } = data;
     const result = await registerUser(userData);
     if (result.success) {
-      navigate('/dashboard');
+      navigate('/app/dashboard');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100">
+        <div className="relative">
+          <div className="absolute top-0 right-0">
+            <ThemeToggle />
+          </div>
+          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900">
             <svg
               className="h-8 w-8 text-primary-600"
               fill="none"

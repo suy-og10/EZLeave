@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useAuth } from '../../contexts/AuthContext';
 import { usersAPI, departmentsAPI } from '../../services/api';
 import { format } from 'date-fns';
 import {
@@ -12,7 +11,6 @@ import {
 import { Link } from 'react-router-dom';
 
 const Employees = () => {
-  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     search: '',

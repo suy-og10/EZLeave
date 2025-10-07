@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
-import { useAuth } from '../../contexts/AuthContext';
 import { leavesAPI } from '../../services/api';
 import { format } from 'date-fns';
 import {
@@ -14,7 +13,6 @@ import {
 import toast from 'react-hot-toast';
 
 const LeaveApprovals = () => {
-  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({

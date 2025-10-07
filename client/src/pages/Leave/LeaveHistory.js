@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import { useAuth } from '../../contexts/AuthContext';
 import { leavesAPI } from '../../services/api';
 import { format } from 'date-fns';
 import {
@@ -13,7 +12,6 @@ import {
 import { Link } from 'react-router-dom';
 
 const LeaveHistory = () => {
-  const { user } = useAuth();
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     status: '',

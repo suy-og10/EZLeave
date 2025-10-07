@@ -5,15 +5,13 @@ import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 import {
-  UserIcon,
   EyeIcon,
   EyeSlashIcon,
-  PencilIcon,
 } from '@heroicons/react/24/outline';
 import { format } from 'date-fns';
 
 const Profile = () => {
-  const { user, updateProfile, changePassword } = useAuth();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -24,7 +22,6 @@ const Profile = () => {
     register: registerProfile,
     handleSubmit: handleProfileSubmit,
     formState: { errors: profileErrors },
-    reset: resetProfile,
   } = useForm({
     defaultValues: {
       firstName: user?.firstName || '',

@@ -1,14 +1,12 @@
 import React from 'react';
-import { useAuth } from '../../contexts/AuthContext';
 import {
   CogIcon,
   BellIcon,
   ShieldCheckIcon,
-  DatabaseIcon,
+  ServerIcon,
 } from '@heroicons/react/24/outline';
 
 const Settings = () => {
-  const { user } = useAuth();
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -192,7 +190,7 @@ const Settings = () => {
         <div className="card">
           <div className="card-header">
             <div className="flex items-center">
-              <DatabaseIcon className="h-6 w-6 text-gray-400 mr-3" />
+              <ServerIcon className="h-6 w-6 text-gray-400 mr-3" />
               <h3 className="text-lg font-medium text-gray-900">Database Settings</h3>
             </div>
           </div>

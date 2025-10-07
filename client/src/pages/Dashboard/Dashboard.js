@@ -54,15 +54,15 @@ const Dashboard = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'approved':
-        return 'text-green-600 bg-green-100';
+        return 'text-green-600 bg-green-100 dark:text-green-400 dark:bg-green-900';
       case 'pending':
-        return 'text-yellow-600 bg-yellow-100';
+        return 'text-yellow-600 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900';
       case 'rejected':
-        return 'text-red-600 bg-red-100';
+        return 'text-red-600 bg-red-100 dark:text-red-400 dark:bg-red-900';
       case 'cancelled':
-        return 'text-gray-600 bg-gray-100';
+        return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-700';
       default:
-        return 'text-gray-600 bg-gray-100';
+        return 'text-gray-600 bg-gray-100 dark:text-gray-400 dark:bg-gray-700';
     }
   };
 
@@ -86,7 +86,7 @@ const Dashboard = () => {
         <h1 className="text-2xl font-bold mb-2">
           Welcome back, {user?.firstName}!
         </h1>
-        <p className="text-primary-100">
+        <p className="text-primary-100 dark:text-primary-200">
           Here's what's happening with your leave requests today.
         </p>
       </div>
@@ -100,8 +100,8 @@ const Dashboard = () => {
                 <CalendarDaysIcon className="h-8 w-8 text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Total Leaves</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Leaves</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                   {leaveStats?.summary?.totalLeaves || 0}
                 </p>
               </div>
@@ -116,8 +116,8 @@ const Dashboard = () => {
                 <ClockIcon className="h-8 w-8 text-yellow-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Pending</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Pending</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                   {leaveStats?.summary?.pendingLeaves || 0}
                 </p>
               </div>
@@ -132,8 +132,8 @@ const Dashboard = () => {
                 <CheckCircleIcon className="h-8 w-8 text-green-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Approved</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Approved</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                   {leaveStats?.summary?.approvedLeaves || 0}
                 </p>
               </div>
@@ -148,8 +148,8 @@ const Dashboard = () => {
                 <XCircleIcon className="h-8 w-8 text-red-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Rejected</p>
-                <p className="text-2xl font-semibold text-gray-900">
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Rejected</p>
+                <p className="text-2xl font-semibold text-gray-900 dark:text-gray-100">
                   {leaveStats?.summary?.rejectedLeaves || 0}
                 </p>
               </div>

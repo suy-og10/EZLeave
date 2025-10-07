@@ -6,6 +6,22 @@ const { auth, adminAuth } = require('../middleware/auth');
 
 const router = express.Router();
 
+// @route   GET /api/departments/public
+// @desc    Get all departments for registration (public)
+// @access  Public
+router.get('/public', async (req, res) => {
+  try {
+    const departments = await Department.find({ isActive: true })
+      .select('_id name')
+      .sort({ name: 1 });
+
+    res.json(departments);
+  } catch (error) {
+    console.error('Get departments error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // @route   GET /api/departments
 // @desc    Get all departments
 // @access  Private
