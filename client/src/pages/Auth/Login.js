@@ -3,7 +3,37 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../contexts/AuthContext';
 import ThemeToggle from '../../components/ThemeToggle';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'; // Added CalendarDaysIcon for AuthHeader
+
+// Component for the simple navigation header (Copied from Register.js)
+const AuthHeader = () => (
+  <header className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+      {/* Logo/Title */}
+      <Link to="/" className="flex items-center space-x-2">
+        <CalendarDaysIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <span className="text-xl font-bold text-gray-900 dark:text-gray-100">EZLeave</span>
+      </Link>
+
+      {/* Navigation and Theme Toggle */}
+      <nav className="flex items-center space-x-4">
+        <Link 
+          to="/" 
+          className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm font-medium hidden sm:inline"
+        >
+          Home
+        </Link>
+        <Link 
+          to="/register" 
+          className="btn btn-secondary btn-sm"
+        >
+          Register
+        </Link>
+        <ThemeToggle />
+      </nav>
+    </div>
+  </header>
+);
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,12 +54,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    // FIX 1: Added relative positioning and padding to account for the fixed header height (h-16).
+    <div className="min-h-screen relative pt-16 flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      {/* FIX 2: Added the AuthHeader component */}
+      <AuthHeader />
+      
       <div className="max-w-md w-full space-y-8">
         <div className="relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
+          {/* FIX 3: Removed redundant ThemeToggle and logo section, as they are now in AuthHeader */}
+          
           <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900">
             <svg
               className="h-8 w-8 text-primary-600"
@@ -158,19 +191,7 @@ const Login = () => {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
-            {/* <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gray-50 text-gray-500">Demo Credentials</span>
-            </div> */}
           </div>
-          
-          {/* <div className="mt-4 text-center">
-            <p className="text-sm text-gray-600">
-              <strong>Admin:</strong> admin@EZLeave.com / password123
-            </p>
-            <p className="text-sm text-gray-600">
-              <strong>Employee:</strong> employee@EZLeave.com / password123
-            </p>
-          </div> */}
         </div>
       </div>
     </div>

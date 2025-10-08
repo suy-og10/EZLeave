@@ -37,20 +37,21 @@ const Sidebar = ({ open, setOpen }) => {
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
-      <div className="flex items-center justify-between h-16 px-4 bg-primary-600">
+      {/* Updated: Removed bg-primary-600 for a minimalist, flat header look */}
+      <div className="flex items-center justify-between h-16 px-4">
         <Link to="/app/dashboard" className="flex items-center">
           <div className="flex-shrink-0">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-              <CalendarDaysIcon className="w-6 h-6 text-primary-600" />
-            </div>
+            {/* Adjusted icon color for better contrast against white/dark mode background */}
+            <CalendarDaysIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
           </div>
-          <span className="ml-3 text-xl font-bold text-white">EZLeave</span>
+          {/* Adjusted text color for minimalist theme */}
+          <span className="ml-3 text-xl font-bold text-gray-900 dark:text-gray-100">EZLeave</span>
         </Link>
       </div>
 
-      <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
         {navigation.map((item) => {
-          const isActive = location.pathname === item.href;
+          const isActive = location.pathname.startsWith(item.href); // Use startsWith for nested routes like /leave/history/123
           return (
             <Link
               key={item.name}
@@ -67,8 +68,8 @@ const Sidebar = ({ open, setOpen }) => {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex items-center px-3 py-2">
+      <div className="p-4 border-t border-gray-100 dark:border-gray-700">
+        <div className="flex items-center px-1 py-1">
           <div className="flex-shrink-0">
             <div className="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center">
               <span className="text-sm font-medium text-primary-600 dark:text-primary-200">
@@ -89,7 +90,7 @@ const Sidebar = ({ open, setOpen }) => {
 
   return (
     <>
-      {/* Mobile sidebar */}
+      {/* Mobile sidebar (unchanged transition logic) */}
       <Transition.Root show={open} as={Fragment}>
         <Dialog as="div" className="relative z-50 lg:hidden" onClose={setOpen}>
           <Transition.Child
@@ -114,7 +115,7 @@ const Sidebar = ({ open, setOpen }) => {
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >
-              <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1">
+              <Dialog.Panel className="relative mr-16 flex w-full max-w-xs flex-1 bg-white dark:bg-gray-800">
                 <Transition.Child
                   as={Fragment}
                   enter="ease-in-out duration-300"
@@ -125,16 +126,18 @@ const Sidebar = ({ open, setOpen }) => {
                   leaveTo="opacity-0"
                 >
                   <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
+                    {/* Adjusted mobile close button color for better visibility against dark overlay */}
                     <button
                       type="button"
-                      className="-m-2.5 p-2.5"
+                      className="-m-2.5 p-2.5 text-white"
                       onClick={() => setOpen(false)}
                     >
                       <span className="sr-only">Close sidebar</span>
-                      <XMarkIcon className="h-6 w-6 text-white" aria-hidden="true" />
+                      <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                     </button>
                   </div>
                 </Transition.Child>
+                {/* Note: The outer div used to be here, moved content up to Dialog.Panel for minimalism */}
                 <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 px-6 pb-2">
                   <SidebarContent />
                 </div>
@@ -146,7 +149,7 @@ const Sidebar = ({ open, setOpen }) => {
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
-        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700">
+        <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700">
           <SidebarContent />
         </div>
       </div>

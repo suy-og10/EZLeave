@@ -20,12 +20,14 @@ const Header = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 lg:pl-64">
+    // Removed shadow-sm and updated border classes for a minimalist, flat look
+    <header className="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 lg:pl-64">
       <div className="flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
           <button
             type="button"
-            className="-m-2.5 p-2.5 text-gray-700 dark:text-gray-300"
+            // Hide the hamburger button on large screens as the sidebar is visible
+            className="-m-2.5 p-2.5 text-gray-700 dark:text-gray-300 lg:hidden" 
             onClick={onMenuClick}
           >
             <span className="sr-only">Open sidebar</span>
@@ -40,10 +42,10 @@ const Header = ({ onMenuClick }) => {
           {/* Theme Toggle */}
           <ThemeToggle />
 
-          {/* Notifications */}
+          {/* Notifications - Refined styling for a cleaner look */}
           <button
             type="button"
-            className="relative rounded-full bg-white dark:bg-gray-800 p-1 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            className="relative rounded-full p-2 text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2"
           >
             <span className="sr-only">View notifications</span>
             <BellIcon className="h-6 w-6" aria-hidden="true" />
@@ -54,7 +56,8 @@ const Header = ({ onMenuClick }) => {
 
           {/* Profile dropdown */}
           <Menu as="div" className="relative">
-            <Menu.Button className="flex items-center space-x-3 rounded-full bg-white dark:bg-gray-800 p-1 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
+            {/* Simplified button styling and focus ring */}
+            <Menu.Button className="flex items-center space-x-3 rounded-full bg-white dark:bg-gray-800 p-1 text-sm focus:outline-none focus:ring-1 focus:ring-primary-500 focus:ring-offset-2">
               <div className="h-8 w-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
                 <span className="text-sm font-medium text-primary-600 dark:text-primary-200">
                   {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
@@ -81,7 +84,8 @@ const Header = ({ onMenuClick }) => {
                 <Menu.Item>
                   {({ active }) => (
                     <Link
-                      to="/profile"
+                      // FIX: Corrected path to protected route prefix
+                      to="/app/profile"
                       className={clsx(
                         active ? 'bg-gray-100 dark:bg-gray-700' : '',
                         'flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300'
@@ -97,7 +101,8 @@ const Header = ({ onMenuClick }) => {
                   <Menu.Item>
                     {({ active }) => (
                       <Link
-                        to="/settings"
+                        // FIX: Corrected path to protected route prefix
+                        to="/app/settings"
                         className={clsx(
                           active ? 'bg-gray-100 dark:bg-gray-700' : '',
                           'flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-300'

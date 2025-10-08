@@ -92,12 +92,11 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const response = await authAPI.register(userData);
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: response.data,
-      });
-      toast.success('Registration successful!');
-      return { success: true };
+      
+      // FIX: Do NOT call LOGIN_SUCCESS here. Registration no longer grants immediate login.
+      // The Register component handles the redirect and toast message for approval status.
+      
+      return { success: true, message: response.data.message };
     } catch (error) {
       console.error('Registration error:', error.response?.data);
       

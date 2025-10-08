@@ -5,12 +5,44 @@ import { useQuery } from 'react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { departmentsAPI } from '../../services/api';
 import ThemeToggle from '../../components/ThemeToggle';
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, EyeSlashIcon, CalendarDaysIcon } from '@heroicons/react/24/outline'; // Added CalendarDaysIcon
+import toast from 'react-hot-toast'; 
+
+// Component for the simple navigation header
+const AuthHeader = () => (
+  <header className="absolute top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
+      {/* Logo/Title */}
+      <Link to="/" className="flex items-center space-x-2">
+        <CalendarDaysIcon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
+        <span className="text-xl font-bold text-gray-900 dark:text-gray-100">EZLeave</span>
+      </Link>
+
+      {/* Navigation and Theme Toggle */}
+      <nav className="flex items-center space-x-4">
+        <Link 
+          to="/" 
+          className="text-gray-600 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 text-sm font-medium hidden sm:inline"
+        >
+          Home
+        </Link>
+        <Link 
+          to="/login" 
+          className="btn btn-secondary btn-sm"
+        >
+          Sign In
+        </Link>
+        <ThemeToggle />
+      </nav>
+    </div>
+  </header>
+);
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const { register: registerUser, isLoading } = useAuth();
+  // Renamed register to signUp for clarity, as it no longer grants immediate login
+  const { register: signUpUser, isLoading: authLoading } = useAuth(); 
   const navigate = useNavigate();
 
   const {
@@ -20,25 +52,63 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
-  const { data: departments = [] } = useQuery('departments', departmentsAPI.getDepartments);
+  const {
+    data: departments = [],
+    isLoading: departmentsLoading,
+    isError: departmentsError,
+  } = useQuery('departments', departmentsAPI.getDepartments, {
+    // FIX: Select the inner 'data' array from the Axios response object
+    select: (response) => response.data, 
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
 
   const password = watch('password');
 
   const onSubmit = async (data) => {
     const { confirmPassword, ...userData } = data;
-    const result = await registerUser(userData);
+    const result = await signUpUser(userData);
+
     if (result.success) {
-      navigate('/app/dashboard');
+      toast.success("Registration successful! Your account is pending admin approval and you will be notified when active.", { duration: 6000 });
+      // Redirect to login page
+      navigate('/login'); 
     }
   };
 
+  if (departmentsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+        <p className="ml-4 text-gray-700 dark:text-gray-300">Loading departments...</p>
+      </div>
+    );
+  }
+
+  if (departmentsError) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-md w-full space-y-4 text-center">
+          <h2 className="text-2xl font-bold text-red-600">Error Loading Departments</h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Could not fetch the list of departments. Please ensure the backend server is running and accessible.
+          </p>
+          <Link to="/" className="font-medium text-primary-600 hover:text-primary-500">
+            Go to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+    // Added relative positioning to anchor the absolute header
+    <div className="min-h-screen relative pt-16 flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+      <AuthHeader /> {/* New Header component */}
       <div className="max-w-md w-full space-y-8">
         <div className="relative">
-          <div className="absolute top-0 right-0">
-            <ThemeToggle />
-          </div>
+          {/* Removed ThemeToggle from here since it's now in AuthHeader */}
+          
           <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100 dark:bg-primary-900">
             <svg
               className="h-8 w-8 text-primary-600"
@@ -193,6 +263,7 @@ const Register = () => {
                 className={`input mt-1 ${errors.department ? 'input-error' : ''}`}
               >
                 <option value="">Select a department</option>
+                {/* The map function now correctly receives an array */}
                 {departments.map((dept) => (
                   <option key={dept._id} value={dept._id}>
                     {dept.name}
@@ -292,16 +363,16 @@ const Register = () => {
           <div>
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={authLoading}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? (
+              {authLoading ? (
                 <div className="flex items-center">
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Creating account...
+                  Submitting for Approval...
                 </div>
               ) : (
-                'Create account'
+                'Request Account Approval'
               )}
             </button>
           </div>

@@ -153,17 +153,17 @@ router.delete('/:id', adminAuth, async (req, res) => {
     }
 
     // Check if user has pending leaves
-    const pendingLeaves = await Leave.find({
+    const activeLeaves = await Leave.find({
       employee: req.params.id,
-      status: 'pending'
+      status: { $in: ['pending', 'approved'] },
+      endDate: { $gte: new Date() } 
     });
 
-    if (pendingLeaves.length > 0) {
+    if (activeLeaves.length > 0) {
       return res.status(400).json({ 
-        message: 'Cannot delete user with pending leave requests' 
+        message: 'Cannot deactivate user with active or future approved leave requests. Please cancel or reject them first.' 
       });
     }
-
     // Soft delete - deactivate user
     user.isActive = false;
     await user.save();

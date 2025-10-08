@@ -38,8 +38,36 @@ import Settings from './pages/Settings/Settings';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
+  // Rely on the top-level App component to handle the isLoading state.
+  const { isAuthenticated } = useAuth(); 
+
+  // If we reach this point and are not authenticated, redirect to login.
+  return isAuthenticated ? children : <Navigate to="/login" />;
+};
+
+// Admin Route Component (logic slightly adjusted for cleaner role access)
+const AdminRoute = ({ children }) => {
+  const { user, isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    // If not authenticated, the parent ProtectedRoute handles the redirect to /login,
+    // but this redirect is kept as a safeguard if the route is accessed directly.
+    return <Navigate to="/login" />;
+  }
+  
+  // If authenticated but not an admin or HR, redirect to dashboard.
+  if (user?.role !== 'admin' && user?.role !== 'hr') {
+    // Note: Changed target to '/app/dashboard' for proper nested routing context
+    return <Navigate to="/app/dashboard" replace />; 
+  }
+
+  return children;
+};
+
+function App() {
   const { isAuthenticated, isLoading } = useAuth();
 
+  // IMPORTANT: Show global loading screen while authentication is initializing.
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -48,33 +76,13 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
-};
-
-// Admin Route Component
-const AdminRoute = ({ children }) => {
-  const { user, isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" />;
-  }
-
-  if (user?.role !== 'admin' && user?.role !== 'hr') {
-    return <Navigate to="/dashboard" />;
-  }
-
-  return children;
-};
-
-function App() {
-  const { isAuthenticated } = useAuth();
-
   return (
     <Routes>
       {/* Public Routes */}
       <Route
         path="/"
-        element={isAuthenticated ? <Navigate to="/dashboard" /> : <Home />}
+        // After loading, if authenticated, go to dashboard, otherwise show home
+        element={isAuthenticated ? <Navigate to="/app/dashboard" replace /> : <Home />}
       />
       <Route
         path="/home"
@@ -82,14 +90,14 @@ function App() {
       />
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/app/dashboard" /> : <Login />}
+        element={isAuthenticated ? <Navigate to="/app/dashboard" replace /> : <Login />}
       />
       <Route
         path="/register"
-        element={isAuthenticated ? <Navigate to="/app/dashboard" /> : <Register />}
+        element={isAuthenticated ? <Navigate to="/app/dashboard" replace /> : <Register />}
       />
 
-      {/* Protected Routes */}
+      {/* Protected Routes - All nested under /app */}
       <Route
         path="/app"
         element={
@@ -98,7 +106,7 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="dashboard" />} />
+        <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<Dashboard />} />
         
         {/* Leave Management */}
@@ -165,8 +173,8 @@ function App() {
         />
       </Route>
 
-      {/* Catch all route */}
-      <Route path="*" element={<Navigate to="/" />} />
+      {/* Catch all route - redirect to / (which handles auth redirect) */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

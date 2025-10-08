@@ -1,9 +1,10 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useAuth } from '../../contexts/AuthContext';
 import { usersAPI, leavesAPI } from '../../services/api';
 import { format } from 'date-fns';
+import toast from 'react-hot-toast';
 import {
   UserIcon,
   CalendarDaysIcon,
@@ -15,7 +16,9 @@ import {
 
 const EmployeeDetails = () => {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user: currentUser } = useAuth(); // Renamed to currentUser to avoid conflict
+
+  const queryClient = useQueryClient();
 
   const { data: employee, isLoading: employeeLoading } = useQuery(
     ['employee', id],
@@ -32,6 +35,65 @@ const EmployeeDetails = () => {
       select: (data) => data.data,
     }
   );
+
+  // Mutation to toggle approval status
+  const approveUserMutation = useMutation(
+    () => usersAPI.updateUser(id, { isApproved: true, isActive: true }),
+    {
+      onSuccess: (updatedUser) => {
+        toast.success(`${updatedUser.data.firstName} has been approved and activated.`);
+        queryClient.invalidateQueries(['employee', id]);
+      },
+      onError: (error) => {
+        const message = error.response?.data?.message || 'Failed to approve user.';
+        toast.error(message);
+      },
+    }
+  );
+
+  // Helper function to render action buttons
+  const renderAdminActions = () => {
+    if (currentUser?.role === 'admin' || currentUser?.role === 'hr') {
+        return (
+            <>
+                <Link
+                  to={`/app/employees/${employee._id}/edit`}
+                  className="w-full btn btn-primary flex items-center justify-center"
+                >
+                  <UserIcon className="w-5 h-5 mr-2" />
+                  Edit Employee
+                </Link>
+
+                {/* NEW: Approval/Activation Button */}
+                {!employee.isApproved && (
+                    <button 
+                        onClick={() => approveUserMutation.mutate()}
+                        disabled={approveUserMutation.isLoading}
+                        className="w-full btn btn-success flex items-center justify-center"
+                    >
+                        {approveUserMutation.isLoading ? 'Approving...' : 'Approve Registration'}
+                    </button>
+                )}
+
+                <Link
+                  to={`/app/employees/${employee._id}/leaves`}
+                  className="w-full btn btn-secondary flex items-center justify-center"
+                >
+                  <CalendarDaysIcon className="w-5 h-5 mr-2" />
+                  View All Leaves
+                </Link>
+                
+                {/* Deactivate button visible only to Admin */}
+                {currentUser?.role === 'admin' && (
+                  <button className="w-full btn btn-danger">
+                    Deactivate Employee
+                  </button>
+                )}
+            </>
+        );
+    }
+    return null;
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -75,7 +137,7 @@ const EmployeeDetails = () => {
         <UserIcon className="mx-auto h-12 w-12 text-gray-300 mb-4" />
         <h3 className="text-lg font-medium text-gray-900 mb-2">Employee not found</h3>
         <p className="text-gray-500 mb-4">The employee you're looking for doesn't exist.</p>
-        <Link to="/employees" className="btn btn-primary">
+        <Link to="/app/employees" className="btn btn-primary">
           Back to Employees
         </Link>
       </div>
@@ -87,7 +149,7 @@ const EmployeeDetails = () => {
       {/* Header */}
       <div className="flex items-center space-x-4">
         <Link
-          to="/employees"
+          to="/app/employees"
           className="flex items-center text-gray-500 hover:text-gray-700"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-1" />
@@ -151,7 +213,13 @@ const EmployeeDetails = () => {
                   </p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Status</label>
+                  <label className="block text-sm font-medium text-gray-700">Approval Status</label>
+                  <span className={`badge ${employee.isApproved ? 'badge-approved' : 'badge-pending'}`}>
+                    {employee.isApproved ? 'Approved' : 'Pending Approval'}
+                  </span>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Active Status</label>
                   <span className={`badge ${employee.isActive ? 'badge-approved' : 'badge-rejected'}`}>
                     {employee.isActive ? 'Active' : 'Inactive'}
                   </span>
@@ -235,25 +303,7 @@ const EmployeeDetails = () => {
             </div>
             <div className="card-body">
               <div className="space-y-3">
-                <Link
-                  to={`/employees/${employee._id}/edit`}
-                  className="w-full btn btn-primary flex items-center justify-center"
-                >
-                  <UserIcon className="w-5 h-5 mr-2" />
-                  Edit Employee
-                </Link>
-                <Link
-                  to={`/employees/${employee._id}/leaves`}
-                  className="w-full btn btn-secondary flex items-center justify-center"
-                >
-                  <CalendarDaysIcon className="w-5 h-5 mr-2" />
-                  View All Leaves
-                </Link>
-                {user?.role === 'admin' && (
-                  <button className="w-full btn btn-danger">
-                    Deactivate Employee
-                  </button>
-                )}
+                {renderAdminActions()}
               </div>
             </div>
           </div>
